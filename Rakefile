@@ -1,6 +1,7 @@
+# coding: utf-8
 $:.unshift("/Library/RubyMotion/lib")
 
-require 'motion/project/template/android'
+require 'motion/project'
 
 begin
   require 'bundler'
@@ -10,7 +11,7 @@ rescue LoadError
 end
 
 
-require './lib/swiss_db'
+# require './lib/swiss_db'
 
 
 Motion::Project::App.setup do |app|
