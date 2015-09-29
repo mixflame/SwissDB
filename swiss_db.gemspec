@@ -1,11 +1,12 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'swiss_db/version'
+
+VERSION = "0.1.3"
 
 Gem::Specification.new do |spec|
   spec.name          = "swiss_db"
-  spec.version       = SwissDb::VERSION
+  spec.version       = VERSION
   spec.authors       = ["Jonathan Silverman"]
   spec.email         = ["jsilverman2@gmail.com"]
 
