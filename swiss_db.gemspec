@@ -1,8 +1,8 @@
 # coding: utf-8
-lib = File.expand_path('../lib', __FILE__)
+lib = File.expand_path('../lib/**', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
-VERSION = "0.1.3"
+VERSION = "0.2.6"
 
 Gem::Specification.new do |spec|
   spec.name          = "swiss_db"
@@ -15,10 +15,15 @@ Gem::Specification.new do |spec|
   spec.homepage      = "http://github.com/jsilverMDX"
   spec.license       = "MIT"
 
-  spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
-  spec.bindir        = "exe"
-  spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
+
+  files = []
+  files << 'README.md'
+  files.concat(Dir.glob('lib/**/**'))
+  spec.files         = files
+  spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
+  spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
+
 
   spec.add_development_dependency "bundler", "~> 1.10"
   spec.add_development_dependency "rake", "~> 10.0"
