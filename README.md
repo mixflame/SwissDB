@@ -39,6 +39,19 @@ class Model < SwissModel
 end
 ```
 
+Don't forget to set $app_context in your bluepotion_application.rb. Don't panic. This won't be a global in the next release.
+
+```ruby
+class BluePotionApplication < PMApplication
+
+  home_screen HomeScreen
+
+  def on_create
+    $app_context = self
+  end
+end
+```
+
 That's it! #all, #last, #first, #count, #save, #update_attributes and the usual are now available!
 
 ## Development
