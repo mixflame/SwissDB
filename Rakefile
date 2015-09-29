@@ -10,7 +10,7 @@ rescue LoadError
 end
 
 
-require 'init'
+require './lib/swiss_db'
 
 
 Motion::Project::App.setup do |app|
