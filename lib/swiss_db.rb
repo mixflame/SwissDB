@@ -16,7 +16,7 @@ if defined?(Motion::Project::Config)
       app.files.insert(insert_point, file)
     end
 
-    puts "APP FILES: #{app.files.inspect}"
+    # puts "APP FILES: #{app.files.inspect}"
 
   end
 end
