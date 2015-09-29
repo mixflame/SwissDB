@@ -22,6 +22,12 @@ Or install it yourself as:
 
 Schemas are the exact same from CoreDataQuery and go in the same place.
 
+Don't forget to add your schema folder in your Rakefile.
+
+```ruby
+  app.files += Dir.glob("schemas/*.rb")
+```
+
 Models are as such:
 
 ```ruby
