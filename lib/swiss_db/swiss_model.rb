@@ -60,7 +60,7 @@ class SwissModel
     # create a row
     result = store.insert(@table_name, obj)
       if result == -1
-        puts "An error occured inserting values into #{@@table_name}"
+        puts "An error occured inserting values into #{@table_name}"
       else
         return result
       end
