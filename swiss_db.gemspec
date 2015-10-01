@@ -2,7 +2,7 @@
 lib = File.expand_path('../lib/**', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
-VERSION = "0.3.6"
+VERSION = "0.3.7"
 
 Gem::Specification.new do |spec|
   spec.name          = "swiss_db"
@@ -18,7 +18,7 @@ Gem::Specification.new do |spec|
 
   files = []
   files << 'README.md'
-  files.concat(Dir.glob('lib/**/**'))
+  files.concat(Dir.glob('lib/swiss_db/*.rb'))
   spec.files         = files
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
