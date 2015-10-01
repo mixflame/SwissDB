@@ -24,7 +24,27 @@ Or install it yourself as:
 
 Schemas are the exact same from CoreDataQuery and go in the same place. (schemas/)
 
-Schema name does nothing.
+```ruby
+schema "0001" do
+
+    entity "Car" do
+      boolean   :is_red
+      string    :model
+      integer32 :tire_size
+      integer32 :tire_weight
+      integer32 :mileage
+    end
+
+    entity "Boat" do
+      string    :name
+      integer32 :weight
+      double    :worth_in_millions
+    end
+
+end
+```
+
+Schema name (the "0001") does nothing.
 
 # Models
 
