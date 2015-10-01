@@ -8,12 +8,24 @@
     DATABASE_VERSION = 1
     ContentValues = Android::Content::ContentValues
 
+    def self.current_schema=(schema)
+      @@current_schema = schema
+    end
+
+    def self.context=(context)
+      @@context = context
+    end
+
+    def self.context
+      @@context
+    end
+
     def writable_db
       getWritableDatabase
     end
 
     def drop_db
-      $app_context.deleteDatabase(DATABASE_NAME)
+      @@context.deleteDatabase(DATABASE_NAME)
     end
 
     def onUpgrade(db, oldVersion, newVersion)
@@ -29,7 +41,7 @@
       # NOTE: I don't know a better way of passing the schema here
       # If you do just change it. For now this works.
       # Thanks.
-      $current_schema.each do |k, v|
+      @@current_schema.each do |k, v|
         create_table db, k, v
       end
       # database.execSQL("CREATE TABLE credentials(username TEXT, password TEXT)")

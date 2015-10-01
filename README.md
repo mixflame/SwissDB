@@ -37,7 +37,7 @@ class Model < SwissModel
 end
 ```
 
-Don't forget to set $app_context in your bluepotion_application.rb. Don't panic. This won't be a global in the next release.
+Set the context in your bluepotion_application.rb.
 
 ```ruby
 class BluePotionApplication < PMApplication
@@ -45,7 +45,7 @@ class BluePotionApplication < PMApplication
   home_screen HomeScreen
 
   def on_create
-    $app_context = self
+    DataStore.context = self
   end
 end
 ```

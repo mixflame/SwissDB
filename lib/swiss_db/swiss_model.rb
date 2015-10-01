@@ -12,7 +12,8 @@ class SwissModel
   # attr_accessor :table_name
 
   def self.store
-    @store ||= DataStore.new($app_context)
+    context = DataStore.context
+    @store ||= DataStore.new(context)
     @store
   end
 
