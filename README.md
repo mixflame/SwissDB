@@ -20,12 +20,10 @@ Or install it yourself as:
 
 ## Usage
 
-Schemas are the exact same from CoreDataQuery and go in the same place.
+Schemas are the exact same from CoreDataQuery and go in the same place. (schemas/)
 
-Don't forget to add your schema folder in your Rakefile.
+Schema name does nothing.
 
-```ruby
-  app.files += Dir.glob("schemas/*.rb")
 ```
 
 Models are as such:
@@ -33,8 +31,8 @@ Models are as such:
 ```ruby
 class Model < SwissModel
 
-  set_table_name "model"
-  set_primary_key "primary_key_name"
+  set_class_name "Model" # there are currently no hacks to automatically get this. sorry.
+  set_primary_key "primary_key_name" # if not set, will default to "id"
 
 end
 ```
@@ -53,6 +51,12 @@ end
 ```
 
 That's it! #all, #last, #first, #count, #save, #update_attributes and the usual are now available!
+
+KNOWN LIMITATION: This ORM compiles in the database name and the database version as a constant. Unfortunately I don't know of a way around this yet. This means no DB migrations yet by doing the simple version bump that is supported by Android. If we get a way to configure these from outside the gem, it will open up possibilities such as multiple schemas and migrations. To get around this simply delete your local database when you need to migrate. You can delete the app from the simulator/device (probably) or use my convenience command:
+
+```ruby
+   DataStore.new($app_context).drop_db #=> true if the DB was dropped, false if not
+```
 
 ## Development
 
