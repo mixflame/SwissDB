@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # SwissDB by jsilverMDX
-if defined?(Motion::Project::Config)
-  puts "MOTION PROJECT CONFIG IS DEFINED"
+if defined?(Motion) && defined?(Motion::Project::Config)
+  # puts "MOTION PROJECT CONFIG IS DEFINED"
   lib_dir_path = File.dirname(File.expand_path(__FILE__))
   Motion::Project::App.setup do |app|
     # unless platform_name == "android"
