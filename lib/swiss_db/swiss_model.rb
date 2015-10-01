@@ -12,35 +12,35 @@ class SwissModel
   # attr_accessor :table_name
 
   def self.store
-    @@store ||= DataStore.new($app_context)
-    @@store
+    @store ||= DataStore.new($app_context)
+    @store
   end
 
   def self.set_table_name(table_name)
-    @@table_name = table_name
+    @table_name = table_name
   end
 
   def self.table_name
-    @@table_name
+    @table_name
   end
 
   def self.set_primary_key(primary_key)
-    @@primary_key = primary_key
+    @primary_key = primary_key
   end
 
   def self.primary_key
-    @@primary_key
+    @primary_key
   end
 
   def self.all
     # select_all
-    cursor = store.select_all(@@table_name, self)
+    cursor = store.select_all(@table_name, self)
     cursor
   end
 
   def self.where(values)
     # select <table> where <field> = <value>
-    cursor = store.select(@@table_name, values, self)
+    cursor = store.select(@table_name, values, self)
     cursor
   end
 
@@ -58,7 +58,7 @@ class SwissModel
 
   def self.create(obj)
     # create a row
-    result = store.insert(@@table_name, obj)
+    result = store.insert(@table_name, obj)
       if result == -1
         puts "An error occured inserting values into #{@@table_name}"
       else
@@ -72,7 +72,7 @@ class SwissModel
 
   def self.destroy_all!
     # destroy all of this kind (empty table)
-    store.destroy_all(@@table_name)
+    store.destroy_all(@table_name)
   end
 
   # something for method missing that gets class and then returns it from the cursor
