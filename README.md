@@ -20,11 +20,13 @@ Or install it yourself as:
 
 ## Usage
 
+# Schemas
+
 Schemas are the exact same from CoreDataQuery and go in the same place. (schemas/)
 
 Schema name does nothing.
 
-```
+# Models
 
 Models are as such:
 
@@ -36,6 +38,8 @@ class Model < SwissModel
 
 end
 ```
+
+# Set the context
 
 Set the context in your bluepotion_application.rb.
 
@@ -50,7 +54,28 @@ class BluePotionApplication < PMApplication
 end
 ```
 
-That's it! #all, #last, #first, #count, #save, #update_attributes and the usual are now available!
+# Examples
+
+```ruby
+  Model.first.name
+  Model.all.last.name
+  Model.all.count
+  m = Model.first
+  m.name = "Sam"
+  m.save # will persist the data
+  m.update_attribute("name", "chucky")
+```
+
+
+That's it! #all, #last, #first, #count, #save, #update_attribute and the usual are now available!
+
+# Planned
+
+#update_attributes support
+
+#destroy just one object support
+
+detect class names of models for tableize
 
 KNOWN LIMITATION: This ORM compiles in the database name and the database version as a constant. Unfortunately I don't know of a way around this yet. This means no DB migrations yet by doing the simple version bump that is supported by Android. If we get a way to configure these from outside the gem, it will open up possibilities such as multiple schemas and migrations. To get around this simply delete your local database when you need to migrate. You can delete the app from the simulator/device (probably) or use my convenience command:
 
@@ -66,7 +91,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/jsilverMDX/swiss_db.
+Bug reports and pull requests are welcome on GitHub at https://github.com/jsilverMDX/swissDB.
 
 
 ## License
