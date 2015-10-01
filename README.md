@@ -91,11 +91,11 @@ That's it! #all, #last, #first, #count, #save, #update_attribute and the usual a
 
 # Planned
 
-#update_attributes support
+* update_attributes support
 
-#destroy just one object support
+* destroy just one object support
 
-detect class names of models for tableize
+* detect class names of models for tableize
 
 KNOWN LIMITATION: This ORM compiles in the database name and the database version as a constant. Unfortunately I don't know of a way around this yet. This means no DB migrations yet by doing the simple version bump that is supported by Android. If we get a way to configure these from outside the gem, it will open up possibilities such as multiple schemas and migrations. To get around this simply delete your local database when you need to migrate. You can delete the app from the simulator/device (probably) or use my convenience command:
 
