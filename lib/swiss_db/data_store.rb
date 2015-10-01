@@ -24,7 +24,7 @@
       getWritableDatabase
     end
 
-    def drop_db
+    def self.drop_db
       @@context.deleteDatabase(DATABASE_NAME)
     end
 
