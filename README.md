@@ -1,3 +1,5 @@
+[![endorse](https://api.coderwall.com/jsilverMDX/endorsecount.png)](https://coderwall.com/jsilverMDX)
+
 # SwissDb
 
 RubyMotion Android ActiveRecord-like ORM for SQLite
