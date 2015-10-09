@@ -3,7 +3,22 @@
 # Convenience methods over the standard cursor
 # Used by Swiss DataStore
 
-class Cursor
+class CursorModel
+
+  def initialize(h)
+    h.each do |k,v|
+      instance_variable_set("@#{k}", v)
+    end
+  end
+
+  def method_missing(methId, *args)
+    str = methId.id2name
+    instance_variable_get("@#{str}")
+  end
+
+end
+
+class Cursor # < Array
 
   FIELD_TYPE_BLOB = 4
   FIELD_TYPE_FLOAT = 2
@@ -29,6 +44,20 @@ class Cursor
 
   def [](pos)
     cursor.moveToPosition(pos) ? self : nil
+  end
+
+  def to_a
+    arr = []
+    (0...count).each do |i|
+      # puts i
+      hash_obj = {}
+      cursor.moveToPosition(i)
+      $current_schema[model.class_name].each do |k, v|
+        hash_obj[k.to_sym] = self.send(k.to_sym)
+      end
+      arr << CursorModel.new(hash_obj)
+    end
+    arr
   end
 
   def count

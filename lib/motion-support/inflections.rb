@@ -23,7 +23,7 @@ module MotionSupport
           @__instance__ ||= new
         end
 
-        # attr_reader :plurals, :singulars, :uncountables, :humans, :acronyms, :acronym_regex
+        attr_accessor :plurals, :singulars, :uncountables, :humans, :acronyms, :acronym_regex
 
         def initialize
           @plurals, @singulars, @uncountables, @humans, @acronyms, @acronym_regex = [], [], [], [], {}, /(?=a)b/
@@ -214,7 +214,7 @@ module MotionSupport
       #   MotionSupport::Inflector.inflections do |inflect|
       #     inflect.uncountable 'rails'
       #   end
-      def inflections
+      def inflections(&block)
         if block_given?
           yield Inflections.instance
         else

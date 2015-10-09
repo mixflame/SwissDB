@@ -6,10 +6,10 @@ class SwissModel
   # meh? .. won't work for now in java... created classes become java packages
   # name will become the namespace of the package...
   # def self.inherited(subclass)
-  #    puts "New subclass: #{subclass.class.name.to_s}"
+  #    puts "New subclass: #{subclass.class.name.split('.').last}"
   # end
 
-  # attr_accessor :table_name
+  # attr_accessor :table_name, :class_name
 
   def self.store
     context = DataStore.context
@@ -17,7 +17,12 @@ class SwissModel
     @store
   end
 
+  def self.class_name
+    @class_name
+  end
+
   def self.set_class_name(class_name) # hack, class.name not functioning in RM Android...
+    @class_name = class_name
     set_table_name(class_name.tableize)
   end
 

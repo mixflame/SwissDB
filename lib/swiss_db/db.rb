@@ -35,7 +35,8 @@ class Object
     @table_name = table_name
     @current_schema[@table_name] = {}
     block.call
-    DataStore.current_schema = @current_schema # there was no other way. I couldn't get context to create the model here.
+    $current_schema = @current_schema
+    DataStore.current_schema = @current_schema
   end
 
   def add_column(name, type)
