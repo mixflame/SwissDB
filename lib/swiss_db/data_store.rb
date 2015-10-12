@@ -36,7 +36,7 @@
 
     #create
     def onCreate(db)
-      puts "table creation... running schema"
+      # puts "table creation... running schema"
       # THIS RELIES ON SCHEMA CODE TO SUCCEED
       # NOTE: I don't know a better way of passing the schema here
       # If you do just change it. For now this works.
@@ -49,7 +49,7 @@
 
     #insert
     def insert(db=writable_db, table, hash_values)
-      puts "inserting data in #{table}"
+      # puts "inserting data in #{table}"
       values = ContentValues.new(hash_values.count)
       hash_values.each do |k, v|
         values.put(k, v)
@@ -59,8 +59,9 @@
     end
     #retrieve
     def select_all(db=writable_db, table, model)
-      puts "selecting data from #{table}"
-      cursor = db.rawQuery("select * from '#{table}'", nil)
+      sql = "select * from '#{table}'"
+      puts sql
+      cursor = db.rawQuery(sql, nil)
       Cursor.new(cursor, model) # we wrap their cursor
     end
 

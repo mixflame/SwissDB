@@ -69,7 +69,7 @@ class Cursor # < Array
     if args.count == 0
       index = cursor.getColumnIndex(str)
       type = cursor.getType(index)
-      puts "getting field #{str} at index #{index} of type #{type}"
+      # puts "getting field #{str} at index #{index} of type #{type}"
       if type == FIELD_TYPE_STRING
         cursor.getString(index)
       elsif type == FIELD_TYPE_INTEGER
