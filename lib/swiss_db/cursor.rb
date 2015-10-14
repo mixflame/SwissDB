@@ -52,7 +52,7 @@ class Cursor # < Array
       # puts i
       hash_obj = {}
       cursor.moveToPosition(i)
-      $current_schema[model.class_name].each do |k, v|
+      $current_schema[model.table_name].each do |k, v|
         hash_obj[k.to_sym] = self.send(k.to_sym)
       end
       arr << CursorModel.new(hash_obj)
