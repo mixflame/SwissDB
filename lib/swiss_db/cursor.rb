@@ -67,23 +67,29 @@ class Cursor # < Array
   def method_missing(methId, *args)
     str = methId.id2name
     if args.count == 0
-      index = cursor.getColumnIndex(str)
-      type = cursor.getType(index)
-      # puts "getting field #{str} at index #{index} of type #{type}"
-      if type == FIELD_TYPE_STRING
-        cursor.getString(index)
-      elsif type == FIELD_TYPE_INTEGER
-        cursor.getInt(index)
-      elsif type == FIELD_TYPE_NULL
-        nil #??
-      elsif type == FIELD_TYPE_FLOAT
-        cursor.getFloat(index)
-      elsif type == FIELD_TYPE_BLOB
-        cursor.getBlob(index)
-      end
-    elsif args.count == 1
+      get_index
+    elsif args.count == 1 && str[-1] == '='
       # assignment... add to values to save
       @values[str.gsub!("=", "")] = args[0]
+    else
+      super
+    end
+  end
+
+  def get_index
+    index = cursor.getColumnIndex(str)
+    type = cursor.getType(index)
+    # puts "getting field #{str} at index #{index} of type #{type}"
+    if type == FIELD_TYPE_STRING
+      cursor.getString(index)
+    elsif type == FIELD_TYPE_INTEGER
+      cursor.getInt(index)
+    elsif type == FIELD_TYPE_NULL
+      nil #??
+    elsif type == FIELD_TYPE_FLOAT
+      cursor.getFloat(index)
+    elsif type == FIELD_TYPE_BLOB
+      cursor.getBlob(index)
     end
   end
 
