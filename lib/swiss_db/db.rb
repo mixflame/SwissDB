@@ -43,8 +43,10 @@ class Object
     @current_schema[@table_name][name] = type
   end
 
-  def boolean(column_name)
-    add_column column_name.to_s, "BOOLEAN"
+  %w(boolean float double integer datetime).each do |type|
+    define_method(type) do |column_name|
+      add_column column_name.to_s, type.upcase
+    end
   end
 
   def string(column_name)
@@ -53,10 +55,6 @@ class Object
 
   def integer32(column_name)
     add_column column_name.to_s, "INTEGER"
-  end
-
-  def double(column_name)
-    add_column column_name.to_s, "DOUBLE"
   end
 
 end
