@@ -25,4 +25,3 @@ if defined?(Motion) && defined?(Motion::Project::Config)
 
   end
 end
-

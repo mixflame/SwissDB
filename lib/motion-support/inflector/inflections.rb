@@ -158,16 +158,29 @@ module MotionSupport
             singular(/(#{s0})#{srest}$/i, '\1' + srest)
             singular(/(#{p0})#{prest}$/i, '\1' + srest)
           else
-            plural(/#{s0.upcase}(?i)#{srest}$/,   p0.upcase   + prest)
-            plural(/#{s0.downcase}(?i)#{srest}$/, p0.downcase + prest)
-            plural(/#{p0.upcase}(?i)#{prest}$/,   p0.upcase   + prest)
-            plural(/#{p0.downcase}(?i)#{prest}$/, p0.downcase + prest)
-
-            singular(/#{s0.upcase}(?i)#{srest}$/,   s0.upcase   + srest)
-            singular(/#{s0.downcase}(?i)#{srest}$/, s0.downcase + srest)
-            singular(/#{p0.upcase}(?i)#{prest}$/,   s0.upcase   + srest)
-            singular(/#{p0.downcase}(?i)#{prest}$/, s0.downcase + srest)
+            # define_plurals and define_singulars arose from a strange error where
+            # the app would quit with absolutely no output (not even VM Aborting!).
+            # The only way to turn off the error was to comment out some lines, but
+            # it didn't really matter which ones, as long as you commented out 4 or 5.
+            # So I split them out like this on a whim and it seems to have solved the problem.
+            # Weird!!
+            define_plurals(s0, srest, p0, prest)
+            define_singulars(s0, srest, p0, prest)
           end
+        end
+
+        def define_plurals(s0, srest, p0, prest)
+          plural(/#{s0.upcase}(?i)#{srest}$/,   p0.upcase   + prest)
+          plural(/#{s0.downcase}(?i)#{srest}$/, p0.downcase + prest)
+          plural(/#{p0.upcase}(?i)#{prest}$/,   p0.upcase   + prest)
+          plural(/#{p0.downcase}(?i)#{prest}$/, p0.downcase + prest)
+        end
+
+        def define_singulars(s0, srest, p0, prest)
+          singular(/#{s0.upcase}(?i)#{srest}$/,   s0.upcase   + srest)
+          singular(/#{s0.downcase}(?i)#{srest}$/, s0.downcase + srest)
+          singular(/#{p0.upcase}(?i)#{prest}$/,   s0.upcase   + srest)
+          singular(/#{p0.downcase}(?i)#{prest}$/, s0.downcase + srest)
         end
 
         # Add uncountable words that shouldn't be attempted inflected.

@@ -30,7 +30,8 @@ class Object
     puts @current_schema.inspect
   end
 
-  def entity(table_name, &block)
+  def entity(class_name, &block)
+    table_name = class_name.tableize
     puts "adding entity #{table_name} to schema"
     @table_name = table_name
     @current_schema[@table_name] = {}
