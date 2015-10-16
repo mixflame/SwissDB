@@ -57,7 +57,7 @@ module MotionSupport
     inflect.singular(/(database)s$/i, '\1')
 
     inflect.irregular('person', 'people')
-    inflect.irregular('man', 'mens')
+    inflect.irregular('man', 'men')
     inflect.irregular('child', 'children')
     inflect.irregular('sex', 'sexes')
     inflect.irregular('move', 'moves')
