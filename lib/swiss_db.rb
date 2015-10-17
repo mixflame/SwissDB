@@ -14,7 +14,7 @@ if defined?(Motion) && defined?(Motion::Project::Config)
     insert_point = app.files.find_index { |file| file =~ /^(?:\.\/)?app\// } || 0
 
     # change to "swiss_db" for just swiss_db
-    Dir.glob(File.join(lib_dir_path, "**/*.rb")).reverse.each do |file|
+    Dir.glob(File.join(lib_dir_path, "**/*.rb")).each do |file|
       app.files.insert(insert_point, file)
     end
 
@@ -25,4 +25,3 @@ if defined?(Motion) && defined?(Motion::Project::Config)
 
   end
 end
-

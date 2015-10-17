@@ -129,5 +129,4 @@ class Cursor # < Array
   def column_names
     cursor.getColumnNames
   end
-
 end
