@@ -105,6 +105,9 @@ KNOWN LIMITATION: This ORM compiles in the database name and the database versio
    DataStore.drop_db #=> true if the DB was dropped, false if not
 ```
 
+## Contributors
+
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies.
