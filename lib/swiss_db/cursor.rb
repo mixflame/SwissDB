@@ -3,22 +3,22 @@
 # Convenience methods over the standard cursor
 # Used by Swiss DataStore
 
-class CursorModel
+# class CursorModel # won't use model properties (custom methods)
 
-  def initialize(h)
-    h.each do |k,v|
-      instance_variable_set("@#{k}", v)
-    end
-  end
+#   def initialize(h)
+#     h.each do |k,v|
+#       instance_variable_set("@#{k}", v)
+#     end
+#   end
 
-  def method_missing(methId, *args)
-    str = methId.id2name
-    instance_variable_get("@#{str}")
-  end
+#   def method_missing(methId, *args)
+#     str = methId.id2name
+#     instance_variable_get("@#{str}")
+#   end
 
-end
+# end
 
-class Cursor # < Array
+class Cursor
 
   FIELD_TYPE_BLOB    = 4
   FIELD_TYPE_FLOAT   = 2
@@ -34,37 +34,56 @@ class Cursor # < Array
     @values = {}
   end
 
+  def model
+    @model
+  end
+
   def first
+    return nil if count == 0
     cursor.moveToFirst ? self : nil
+    model.new(to_hash)
   end
 
   def last
+    return nil if count == 0
     cursor.moveToLast ? self : nil
+    model.new(to_hash)
   end
 
   def [](pos)
+    return nil if count == 0
     cursor.moveToPosition(pos) ? self : nil
+    model.new(to_hash)
   end
 
-  def to_a
-    arr = []
-    (0...count).each do |i|
-      # puts i
+  def to_hash
       hash_obj = {}
-      cursor.moveToPosition(i)
       $current_schema[model.table_name].each do |k, v|
         hash_obj[k.to_sym] = self.send(k.to_sym)
       end
-      arr << CursorModel.new(hash_obj)
+      hash_obj
+  end
+
+  def to_a
+    return nil if count == 0
+    arr = []
+    (0...count).each do |i|
+      # puts i
+      cursor.moveToPosition(i)
+      arr << model.new(to_hash)
     end
     arr
   end
 
   def method_missing(methId, *args)
     method_name = methId.id2name
-
+    # puts "cursor method missing #{method_name}"
     if valid_setter_getter?(method_name)
       handle_get_or_set(method_name, args)
+    elsif model.respond_to?(method_name) # so model methods work
+      # puts "model responds to method. calling."
+      called = model.send(method_name.to_s)
+      # puts called
     else
       super
     end

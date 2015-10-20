@@ -11,6 +11,18 @@ class SwissModel
 
   # attr_accessor :table_name, :class_name
 
+  def initialize(h)
+    h.each do |k,v|
+      instance_variable_set("@#{k}", v)
+    end
+  end
+
+  def method_missing(methId, *args)
+    str = methId.id2name
+    instance_variable_get("@#{str}")
+  end
+
+
   def self.store
     context = DataStore.context
     @store ||= DataStore.new(context)
