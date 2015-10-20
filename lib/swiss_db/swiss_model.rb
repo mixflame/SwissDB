@@ -33,6 +33,17 @@ class SwissModel
     self.class.store.update(self.class.table_name, @values, {self.class.primary_key => pk_value})
   end
 
+  def update_attribute(key, value)
+    pk_value = self.send(self.class.primary_key.to_sym)
+    self.class.store.update(self.class.table_name, {key => value}, {self.class.primary_key => pk_value})
+  end
+
+  def update_attributes(hash)
+    hash.each do |k, v|
+      update_attribute(k, v)
+    end
+  end
+
 
   def self.store
     context = DataStore.context

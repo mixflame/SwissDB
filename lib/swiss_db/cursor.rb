@@ -75,6 +75,8 @@ class Cursor
     arr
   end
 
+  # todo: take out setter code. it's not used anymore. leave the getter code. it is used. (see #to_hash)
+
   def method_missing(methId, *args)
     method_name = methId.id2name
     # puts "cursor method missing #{method_name}"

@@ -91,6 +91,8 @@ end
 
 That's it! #all, #last, #first, #count, #save, #update_attribute and the usual are now available!
 
+As of 0.7.1 all returned objects are SwissModel instances. Model methods will now work properly.
+
 # Planned
 
 * update_attributes support
