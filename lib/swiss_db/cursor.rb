@@ -80,28 +80,15 @@ class Cursor
   def method_missing(methId, *args)
     method_name = methId.id2name
     # puts "cursor method missing #{method_name}"
-    if valid_setter_getter?(method_name)
-      handle_get_or_set(method_name, args)
-    elsif model.respond_to?(method_name) # so model methods work
-      # puts "model responds to method. calling."
-      called = model.send(method_name.to_s)
-      # puts called
+    if valid_getter?(method_name)
+      get_method(method_name)
     else
       super
     end
   end
 
-  def valid_setter_getter?(method_name)
-    method_name.chop! if is_setter? method_name
+  def valid_getter?(method_name)
     column_names.include? method_name
-  end
-
-  def handle_get_or_set(method_name, args)
-    if is_setter? method_name
-      set_method(args)
-    else
-      get_method(method_name)
-    end
   end
 
   def is_setter?(method_name)
@@ -124,23 +111,6 @@ class Cursor
     elsif type == FIELD_TYPE_BLOB
       cursor.getBlob(index)
     end
-  end
-
-  def set_method(method_name, args)
-    @values[method_name.chop] = args[0]
-  end
-
-  def save
-    primary_key = model.primary_key
-    pk_value = self.send(primary_key.to_sym)
-    model.store.update(model.table_name, @values, {primary_key => pk_value})
-  end
-
-  # we are updating an existing row.. makes more sense on cursor...
-  def update_attribute(key, value)
-    primary_key = model.primary_key
-    pk_value = self.send(primary_key.to_sym)
-    model.store.update(model.table_name, {key => value}, {primary_key => pk_value})
   end
 
   def count
