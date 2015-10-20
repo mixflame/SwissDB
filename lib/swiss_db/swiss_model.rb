@@ -9,17 +9,28 @@ class SwissModel
   #    puts "New subclass: #{subclass.class.name.split('.').last}"
   # end
 
-  # attr_accessor :table_name, :class_name
+  attr_accessor :cursor, :values
 
-  def initialize(h)
+  def initialize(h, cursor)
+    @cursor = cursor
     h.each do |k,v|
       instance_variable_set("@#{k}", v)
     end
+    @values = {}
   end
 
   def method_missing(methId, *args)
     str = methId.id2name
-    instance_variable_get("@#{str}")
+    if instance_variable_get("@#{str}")
+      return instance_variable_get("@#{str}")
+    elsif str[-1] == '=' # setter
+      @values[str.chop] = args[0]
+    end
+  end
+
+  def save
+    pk_value = self.send(self.class.primary_key.to_sym)
+    self.class.store.update(self.class.table_name, @values, {self.class.primary_key => pk_value})
   end
 
 

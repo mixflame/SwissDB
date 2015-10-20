@@ -41,19 +41,19 @@ class Cursor
   def first
     return nil if count == 0
     cursor.moveToFirst ? self : nil
-    model.new(to_hash)
+    model.new(to_hash, cursor)
   end
 
   def last
     return nil if count == 0
     cursor.moveToLast ? self : nil
-    model.new(to_hash)
+    model.new(to_hash, cursor)
   end
 
   def [](pos)
     return nil if count == 0
     cursor.moveToPosition(pos) ? self : nil
-    model.new(to_hash)
+    model.new(to_hash, cursor)
   end
 
   def to_hash
@@ -70,7 +70,7 @@ class Cursor
     (0...count).each do |i|
       # puts i
       cursor.moveToPosition(i)
-      arr << model.new(to_hash)
+      arr << model.new(to_hash, cursor)
     end
     arr
   end

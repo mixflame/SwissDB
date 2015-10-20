@@ -62,7 +62,7 @@
       sql = "select * from '#{table}'"
       puts sql
       cursor = db.rawQuery(sql, nil)
-      swiss_cursor = Cursor.new(cursor, model) # we wrap their cursor
+      Cursor.new(cursor, model) # we wrap their cursor
     end
 
     def select(db=writable_db, table, values, model)
@@ -73,7 +73,7 @@
       sql = "select * from '#{table}' where #{value_str}"
       puts sql
       cursor = db.rawQuery(sql, nil)
-      swiss_cursor = Cursor.new(cursor, model) # we wrap their cursor
+      Cursor.new(cursor, model) # we wrap their cursor
     end
 
     # update
