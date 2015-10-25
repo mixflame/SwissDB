@@ -100,14 +100,17 @@ class Cursor
     type = cursor.getType(index)
     # puts "getting field #{method_name} at index #{index} of type #{type}"
 
-    if type == FIELD_TYPE_STRING
-      cursor.getString(index)
+    if type == FIELD_TYPE_STRING #also boolean
+      str = cursor.getString(index).to_s
+      str = true if str == "true"
+      str = false if str == "false"
+      str
     elsif type == FIELD_TYPE_INTEGER
-      cursor.getInt(index)
+      cursor.getInt(index).to_i
     elsif type == FIELD_TYPE_NULL
       nil #??
     elsif type == FIELD_TYPE_FLOAT
-      cursor.getFloat(index)
+      cursor.getFloat(index).to_f
     elsif type == FIELD_TYPE_BLOB
       cursor.getBlob(index)
     end
