@@ -50,9 +50,6 @@ class Object
     if @opts[:id]
       table_schema['id'] = 'INTEGER PRIMARY KEY AUTOINCREMENT' unless table_schema.has_key? 'id'
     else
-      mp "inspecting table_schema and the like"
-      mp table_schema.inspect
-      mp table_schema.values.inspect
       primary_keys = table_schema.values.select{ |val| val.include? 'PRIMARY KEY' }
       raise_primary_keys_error(table_schema.keys) unless primary_keys.length == 1
     end
@@ -70,9 +67,6 @@ class Object
     define_method(type) do |column_name, column_opts|
       column_opts ||= {}
       type = type.upcase
-      mp "calling column name: #{column_name}"
-      mp "column_opts: #{column_opts}"
-      mp "current type is #{type}"
       type = add_primary(type, column_name) if column_opts[:primary_key]
       add_column column_name.to_s, type
     end
