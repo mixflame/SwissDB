@@ -73,20 +73,20 @@ class Object
       mp "calling column name: #{column_name}"
       mp "column_opts: #{column_opts}"
       mp "current type is #{type}"
-      type = add_primary(type) if column_opts[:primary_key] && !@opts[:id]
+      type = add_primary(type, column_name) if column_opts[:primary_key]
       add_column column_name.to_s, type
     end
   end
 
   def string(column_name, column_opts={})
     type = 'VARCHAR'
-    type = add_primary(type) if column_opts[:primary_key] && !@opts[:id]
+    type = add_primary(type, column_name) if column_opts[:primary_key]
     add_column column_name.to_s, type
   end
 
   def integer32(column_name, column_opts={})
     type = 'INTEGER'
-    type = add_primary(type) if column_opts[:primary_key] && !@opts[:id]
+    type = add_primary(type, column_name) if column_opts[:primary_key]
     add_column column_name.to_s, type
   end
 
@@ -110,9 +110,13 @@ specify one primary key for this table. Instead you specified #{primary_keys.len
     raise error_message
   end
 
-  def add_primary(type)
-    type << ' PRIMARY KEY'
-    type << ' AUTOINCREMENT' if type == 'INTEGER PRIMARY KEY'
+  def add_primary(type, name)
+    if @opts[:id]
+      puts "WARNING: ignoring primary_key: #{name} because `id` is the default primary key"
+    else
+      type << ' PRIMARY KEY'
+      type << ' AUTOINCREMENT' if type == 'INTEGER PRIMARY KEY'
+    end
     type
   end
 
