@@ -35,6 +35,7 @@ class Object
     puts "adding entity #{table_name} to schema"
     @table_name = table_name
     @current_schema[@table_name] = {}
+    add_column('id', "INTEGER PRIMARY KEY AUTOINCREMENT")
     block.call
     $current_schema = @current_schema
     DataStore.current_schema = @current_schema
@@ -46,6 +47,7 @@ class Object
 
   %w(boolean float double integer datetime).each do |type|
     define_method(type) do |column_name|
+      return if column_name == :id
       add_column column_name.to_s, type.upcase
     end
   end

@@ -44,7 +44,6 @@ class SwissModel
     end
   end
 
-
   def self.store
     context = DataStore.context
     @store ||= DataStore.new(context)
