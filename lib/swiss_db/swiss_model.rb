@@ -29,91 +29,112 @@ module SwissDB
     end
 
     def save
-      pk_value = self.send(self.class.primary_key.to_sym)
-      self.class.store.update(self.class.table_name, @values, {self.class.primary_key => pk_value})
+      store.update(table_name,
+                   @values,
+                   {primary_key => primary_key_value})
     end
 
     def update_attribute(key, value)
-      pk_value = self.send(self.class.primary_key.to_sym)
-      self.class.store.update(self.class.table_name, {key => value}, {self.class.primary_key => pk_value})
+      store.update(table_name,
+                   {key => value},
+                   {primary_key => primary_key_value})
     end
 
     def update_attributes(hash)
-      hash.each do |k, v|
-        update_attribute(k, v)
-      end
+      hash.each { |k, v| update_attribute(k, v) }
     end
 
-    def self.store
-      SwissDB.store
+    def primary_key
+      self.class.primary_key
     end
 
-    def self.class_name
-      @class_name
+    def primary_key_value
+      self.send(primary_key.to_sym)
     end
 
-    def self.set_class_name(class_name) # hack, class.name not functioning in RM Android...
-      @class_name = class_name
-      set_table_name(class_name.tableize)
+    def table_name
+      self.class.table_name
     end
 
-    def self.set_table_name(table_name)
-      @table_name = table_name
-    end
-
-    def self.table_name
-      @table_name
-    end
-
-    def self.set_primary_key(primary_key)
-      @primary_key = primary_key
-    end
-
-    def self.primary_key
-      @primary_key.nil? ? "id" : @primary_key
-    end
-
-    def self.all
-      # select_all
-      cursor = store.select_all(@table_name, self)
-      cursor
-    end
-
-    def self.where(values)
-      # select <table> where <field> = <value>
-      cursor = store.select(@table_name, values, self)
-      cursor
-    end
-
-    def self.first
-      # select all and get first
-      cursor = all.first
-      cursor
-    end
-
-    def self.last
-      # select all and get last
-      cursor = all.last
-      cursor
-    end
-
-    def self.create(obj)
-      # create a row
-      result = store.insert(@table_name, obj)
-      if result == -1
-        puts "An error occured inserting values into #{@table_name}"
-      else
-        return result
-      end
+    def store
+      self.class.store
     end
 
     # def destroy
     #   # destroy this row
     # end
 
-    def self.destroy_all!
-      # destroy all of this kind (empty table)
-      store.destroy_all(@table_name)
+    # -------------
+    # CLASS METHODS
+    # -------------
+    class << self
+      def store
+        SwissDB.store
+      end
+
+      def class_name
+        @class_name
+      end
+
+      def set_class_name(class_name) # hack, class.name not functioning in RM Android...
+        @class_name = class_name
+        set_table_name(class_name.tableize)
+      end
+
+      def set_table_name(table_name)
+        @table_name = table_name
+      end
+
+      def table_name
+        @table_name
+      end
+
+      def set_primary_key(primary_key)
+        @primary_key = primary_key
+      end
+
+      def primary_key
+        @primary_key.nil? ? "id" : @primary_key
+      end
+
+      def all
+        # select_all
+        cursor = store.select_all(@table_name, self)
+        cursor
+      end
+
+      def where(values)
+        # select <table> where <field> = <value>
+        cursor = store.select(@table_name, values, self)
+        cursor
+      end
+
+      def first
+        # select all and get first
+        cursor = all.first
+        cursor
+      end
+
+      def last
+        # select all and get last
+        cursor = all.last
+        cursor
+      end
+
+      def create(obj)
+        # create a row
+        result = store.insert(@table_name, obj)
+        if result == -1
+          puts "An error occured inserting values into #{@table_name}"
+        else
+          return result
+        end
+      end
+
+      def destroy_all!
+        # destroy all of this kind (empty table)
+        store.destroy_all(@table_name)
+      end
     end
 
   end
