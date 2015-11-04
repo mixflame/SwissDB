@@ -11,30 +11,30 @@ def setup_schema(app)
   # SwissDB::SQLWriter.create_migration_sql(migrations)
 end
 
-if defined?(Motion) && defined?(Motion::Project::Config)
+def building_app?(args)
+  # Don't write the schema to sql unless we're building the app
+  intersection = (args & %w(device archive build release emulator))
+  !intersection.empty?
+end
 
+def add_app_files(app)
   lib_dir_path = File.dirname(__FILE__)
+  insert_point = app.files.find_index { |file| file =~ /^(?:\.\/)?app\// } || 0
 
-  Motion::Project::App.setup do |app|
-    setup_schema(app) # need this app variable to get proper directory names
+  # Specify which folders to put into the app
+  swiss_db_files = Dir.glob(File.join(lib_dir_path, "/swiss_db/**/*.rb"))
+  motion_files = Dir.glob(File.join(lib_dir_path, "/motion-support/**/*.rb"))
 
-    # unless platform_name == "android"
-    #   raise "Sorry, the platform #{platform_name} is not supported by SwissDB"
-    # end
-
-    # scans app.files until it finds app/ (the default)
-    # if found, it inserts just before those files, otherwise it will insert to
-    # the end of the list
-    insert_point = app.files.find_index { |file| file =~ /^(?:\.\/)?app\// } || 0
-
-    # Specify which folders to put into the app
-    swiss_db_files = Dir.glob(File.join(lib_dir_path, "/swiss_db/**/*.rb"))
-    motion_files = Dir.glob(File.join(lib_dir_path, "/motion-support/**/*.rb"))
-
-    (swiss_db_files + motion_files).each do |file|
-      app.files.insert(insert_point, file)
-    end
-
-    # puts "APP FILES: #{app.files.inspect}"
+  (swiss_db_files + motion_files).each do |file|
+    app.files.insert(insert_point, file)
   end
+end
+
+if defined?(Motion) && defined?(Motion::Project::Config) && building_app?(ARGV)
+  Motion::Project::App.setup do |app|
+    setup_schema(app) if running_app?(ARGV)
+    add_app_files(app)
+  end
+elsif running_app? ARGV
+  raise 'SwissDB must be included in a BluePotion App'
 end
