@@ -9,7 +9,7 @@ module SwissDB
       @store = DataStore.new(context)
     end
 
-    def create_from_schema(db)
+    def create_tables_from_schema(db)
       # Since we don't have access to R::Raw here we'll need to find it the hard way
       resource_id = find_resource('schema', 'raw')
       # raw resources return input streams which means we need readers

@@ -41,7 +41,7 @@ class Cursor
   def first
     return nil if count == 0
     cursor.moveToFirst ? self : nil
-    model.new(to_hash, cursor)
+    m = model.new(to_hash, cursor)
   end
 
   def last
@@ -57,11 +57,11 @@ class Cursor
   end
 
   def to_hash
-      hash_obj = {}
-      $current_schema[model.table_name].each do |k, v|
-        hash_obj[k.to_sym] = self.send(k.to_sym)
-      end
-      hash_obj
+    hash_obj = {}
+    column_names.each do |k|
+      hash_obj[k] = self.send(k)
+    end
+    hash_obj
   end
 
   def to_a
@@ -77,8 +77,7 @@ class Cursor
 
   # todo: take out setter code. it's not used anymore. leave the getter code. it is used. (see #to_hash)
 
-  def method_missing(methId, *args)
-    method_name = methId.id2name
+  def method_missing(method_name, *args)
     # puts "cursor method missing #{method_name}"
     if valid_getter?(method_name)
       get_method(method_name)
@@ -121,6 +120,6 @@ class Cursor
   end
 
   def column_names
-    cursor.getColumnNames
+    cursor.getColumnNames.map(&:to_sym)
   end
 end

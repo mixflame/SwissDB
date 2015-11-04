@@ -32,9 +32,9 @@ end
 
 if defined?(Motion) && defined?(Motion::Project::Config) && building_app?(ARGV)
   Motion::Project::App.setup do |app|
-    setup_schema(app) if running_app?(ARGV)
+    setup_schema(app) if building_app?(ARGV)
     add_app_files(app)
   end
-elsif running_app? ARGV
+elsif building_app? ARGV
   raise 'SwissDB must be included in a BluePotion App'
 end

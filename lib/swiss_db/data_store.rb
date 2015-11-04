@@ -29,14 +29,12 @@ class DataStore < Android::Database::SQLite::SQLiteOpenHelper
   end
 
   def onUpgrade(db, oldVersion, newVersion)
-    # maybe drop if needed...
-    db.execSQL("DROP *")
-    onCreate(db)
+    # TODO when migrations are implemented
   end
 
   #create
   def onCreate(db)
-    SwissDB.create_from_schema(db)
+    SwissDB.create_tables_from_schema(db)
   end
 
   #insert
