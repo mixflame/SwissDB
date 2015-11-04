@@ -17,8 +17,8 @@ module SchemaTools
 
     attr_accessor :schema_hash
 
-    def schema(schema_name, &block)
-      @schema_hash = {}
+    def schema(version, &block)
+      @schema_hash = { version: version }
       block.call
     end
 

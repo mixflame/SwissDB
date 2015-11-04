@@ -30,6 +30,9 @@ module SwissDB
 
     def onUpgrade(db, oldVersion, newVersion)
       # TODO when migrations are implemented
+      mp "Calling onUpgrade"
+      mp "old version: #{oldVersion}"
+      mp "new version: #{newVersion}"
     end
 
     #create
