@@ -1,45 +1,40 @@
 module SwissDB
   class << self
 
-    attr_accessor :store, :context, :resources
+    attr_accessor :store, :context, :resources, :version
 
     DB_NAME = 'swissdb'
 
     def setup(context)
       @context = context
       @resources = context.getResources
-      version = get_version_from_raw
+      get_version_from_raw
       @store = DataStore.new(context, DB_NAME, nil, version)
     end
 
     def get_version_from_raw
-      # Since we don't have access to R::Raw here we'll need to find it the hard way
-      resource_id = find_resource('version', 'raw')
-      # raw resources return input streams which means we need readers
-      stream = resources.openRawResource(resource_id)
-      is_reader = Java::IO::InputStreamReader.new(stream)
-      reader = Java::IO::BufferedReader.new(is_reader)
-      begin
-        version = reader.readLine
-      rescue
-        raise 'Error reading schema version'
-      ensure
-        [stream, is_reader, reader].each(&:close)
+      message = 'Error reading schema version'
+      read_from_raw_resource('version', message) do |reader|
+        @version = reader.readLine.to_i
       end
-      version.to_i
     end
 
     def create_tables_from_schema(db)
-      # Since we don't have access to R::Raw here we'll need to find it the hard way
-      resource_id = find_resource('schema', 'raw')
-      # raw resources return input streams which means we need readers
+      message = 'Error reading schema SQL'
+      read_from_raw_resource('schema', message) do |reader|
+        execute_sql_script(db, reader)
+      end
+    end
+
+    def read_from_raw_resource(resource_name, error_message, &block)
+      resource_id = find_resource(resource_name, 'raw')
       stream = resources.openRawResource(resource_id)
       is_reader = Java::IO::InputStreamReader.new(stream)
       reader = Java::IO::BufferedReader.new(is_reader)
       begin
-        execute_sql_script(db, reader)
+        block.call(reader)
       rescue
-        raise 'Error reading schema SQL'
+        raise error_message
       ensure
         [stream, is_reader, reader].each(&:close)
       end
