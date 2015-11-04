@@ -1,4 +1,4 @@
-module SwissDB
+module SchemaTools
   module SQLWriter
     class << self
       def create_schema_sql(schema, app)

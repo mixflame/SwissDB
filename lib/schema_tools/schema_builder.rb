@@ -5,7 +5,7 @@ require 'motion-support/array'
 require 'motion-support/string'
 require 'motion-support/default_inflections'
 
-module SwissDB
+module SchemaTools
   class SchemaBuilder
 
     def self.build_schema(app)
