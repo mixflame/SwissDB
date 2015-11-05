@@ -17,8 +17,9 @@ module SchemaTools
 
     attr_accessor :schema_hash
 
-    def schema(version, &block)
-      @schema_hash = { version: version }
+    def schema(opts, &block)
+      raise 'schema must specify version with a hash' unless opts[:version]
+      @schema_hash = opts
       block.call
     end
 
