@@ -24,10 +24,12 @@ Or install it yourself as:
 
 # Schemas
 
-Schemas are the exact same from CoreDataQuery and go in the same place. (schemas/)
+Schemas go in the project root under `schemas/`. You can stash multiple schema files here for your own records (`schema1.rb`, `schema2.rb`, etc.) but the schema your app actually uses must be named `schema.rb`.
+
+We're attempting to support both Core Data Query and Active Record type specifications like `datetime` `integer32` and `integer`. In SQLite there are only a few types anyways so that `integer32` and `integer` get created the same.
 
 ```ruby
-schema "0001" do
+schema version: 1 do
 
     entity "Car" do
       boolean   :is_red
@@ -46,14 +48,18 @@ schema "0001" do
 end
 ```
 
-Schema name (the "0001") does nothing.
+### Schema Version and Migrations
+
+You must specify a version with your schema. This integer (which must start at 1) is stored internally to the SQLite database and is used to determine if migrations need to be run.
+
+Migrating your database is not yet supported by SwissDB but is the next thing on the To-Do list.
 
 # Models
 
 Models are as such:
 
 ```ruby
-class Model < SwissModel
+class Model < SwissDB::SwissModel
 
   set_class_name "Model" # there are currently no hacks to automatically get this. sorry.
   set_primary_key "primary_key_name" # if not set, will default to "id"
@@ -61,9 +67,9 @@ class Model < SwissModel
 end
 ```
 
-# Set the context
+# Setup SwissDB
 
-Set the context in your bluepotion_application.rb.
+Since SwissDB needs to use your app's context you need to help it get setup like so:
 
 ```ruby
 class BluePotionApplication < PMApplication
@@ -71,7 +77,7 @@ class BluePotionApplication < PMApplication
   home_screen HomeScreen
 
   def on_create
-    DataStore.context = self
+    SwissDB.setup(self)
   end
 end
 ```
@@ -101,10 +107,10 @@ As of 0.7.1 all returned objects are SwissModel instances. Model methods will no
 
 * detect class names of models for tableize
 
-KNOWN LIMITATION: This ORM compiles in the database name and the database version as a constant. Unfortunately I don't know of a way around this yet. This means no DB migrations yet by doing the simple version bump that is supported by Android. If we get a way to configure these from outside the gem, it will open up possibilities such as multiple schemas and migrations. To get around this simply delete your local database when you need to migrate. You can delete the app from the simulator/device (probably) or use my convenience command:
+KNOWN LIMITATION: No DB migrations yet by doing the simple version bump that is supported by Android. To get around this simply delete your local database when you need to migrate. You can delete the app from the simulator/device (probably) or use this convenience command:
 
 ```ruby
-   DataStore.drop_db #=> true if the DB was dropped, false if not
+   SwissDB::DataStore.drop_db #=> true if the DB was dropped, false if not
 ```
 
 ## Contributors
@@ -124,4 +130,3 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/jsilve
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-
