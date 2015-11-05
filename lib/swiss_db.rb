@@ -13,8 +13,8 @@ end
 
 def building_app?(args)
   # Don't write the schema to sql unless we're building the app
-  intersection = (args & %w(device archive build release emulator))
-  !intersection.empty?
+  intersection = (args & %w(device archive build release emulator newclear)) # newclear is technically a build
+  !intersection.empty? || args == ""
 end
 
 def add_app_files(app)
@@ -22,7 +22,7 @@ def add_app_files(app)
   insert_point = app.files.find_index { |file| file =~ /^(?:\.\/)?app\// } || 0
 
   # Specify which folders to put into the app
-  swiss_db_files = Dir.glob(File.join(lib_dir_path, "/swiss_db/**/*.rb"))
+  swiss_db_files = Dir.glob(File.join(lib_dir_path, "/swiss_db/**/**.rb"))
   motion_files = Dir.glob(File.join(lib_dir_path, "/motion-support/**/*.rb"))
 
   (swiss_db_files + motion_files).each do |file|
@@ -30,11 +30,11 @@ def add_app_files(app)
   end
 end
 
-if defined?(Motion) && defined?(Motion::Project::Config) && building_app?(ARGV)
+if defined?(Motion) && defined?(Motion::Project::Config)
   Motion::Project::App.setup do |app|
     setup_schema(app) if building_app?(ARGV)
     add_app_files(app)
   end
-elsif building_app? ARGV
-  raise 'SwissDB must be included in a BluePotion App'
+else
+  puts 'SwissDB must be included in a BluePotion App' if ARGV[0] != "gem:install"
 end
