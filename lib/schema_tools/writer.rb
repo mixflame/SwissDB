@@ -1,18 +1,16 @@
 module SchemaTools
-  module SQLWriter
+  module Writer
     class << self
       attr_accessor :schema, :app
 
       def create_schema_sql(schema, app)
         @schema = schema
         @app = app
-        write_version_file
         write_schema_file
       end
 
-      def write_version_file
+      def write_version_file(version, app)
         # TODO: Version checking, android expects monotonically increasing version ints
-        version = @schema.delete(:version)
         filename = File.join(app.resources_dirs.first, 'raw', 'version')
         write_raw_resource_file(filename, version)
       end

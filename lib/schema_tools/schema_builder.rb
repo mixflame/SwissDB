@@ -12,15 +12,26 @@ module SchemaTools
       schema_filename = File.join(app.project_dir, 'schemas/schema.rb')
       dsl = new
       dsl.instance_eval(File.read(schema_filename))
-      dsl.schema_hash
+      return dsl.schema_hash, dsl.version
     end
 
-    attr_accessor :schema_hash
+    attr_accessor :schema_hash, :version
 
-    def schema(opts, &block)
-      raise 'schema must specify version with a hash' unless opts[:version]
-      @schema_hash = opts
+    def schema(opts={}, &block)
+      check_opts(opts)
+      @version = opts[:version]
+      raise 'schema version must be an integer greater than 0' unless version_ok?
+      @schema_hash = {}
       block.call
+    end
+
+    def check_opts(opts)
+      raise 'schema must supply a hash before the block' unless opts.is_a? Hash
+      raise 'schema must specify a version' unless opts[:version]
+    end
+
+    def version_ok?
+      version.is_a?(Integer) && version > 0
     end
 
     def entity(class_name, opts={}, &block)

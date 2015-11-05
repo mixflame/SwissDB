@@ -3,9 +3,10 @@
 
 def setup_schema(app)
   require 'schema_tools/schema_builder'
-  require 'schema_tools/sql_writer'
-  schema = SchemaTools::SchemaBuilder.build_schema(app)
-  SchemaTools::SQLWriter.create_schema_sql(schema, app)
+  require 'schema_tools/writer'
+  schema, version = SchemaTools::SchemaBuilder.build_schema(app)
+  SchemaTools::Writer.create_schema_sql(schema, app)
+  SchemaTools::Writer.write_version_file(version, app)
   # TODO
   # migrations = SwissDB::MigrationsBuilder.build_migrations
   # SwissDB::SQLWriter.create_migration_sql(migrations)

@@ -26,7 +26,7 @@ module SwissDB
     def first
       return nil if count == 0
       cursor.moveToFirst ? self : nil
-      m = model.new(to_hash, cursor)
+      model.new(to_hash, cursor)
     end
 
     def last
