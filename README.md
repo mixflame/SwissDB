@@ -2,7 +2,7 @@
 
 # SwissDb
 
-RubyMotion Android ActiveRecord-like ORM for SQLite
+RubyMotion Android ActiveRecord-like ORM for SQLite. **Known to work on RM 4.4 and not work on RM 4.5** A bug report has been submitted so we'll update this when that gets fixed.
 
 ## Installation
 

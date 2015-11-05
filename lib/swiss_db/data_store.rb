@@ -4,28 +4,14 @@
 module SwissDB
   class DataStore < Android::Database::SQLite::SQLiteOpenHelper
 
-    DATABASE_NAME = "swissdb"
-    DATABASE_VERSION = 1
     ContentValues = Android::Content::ContentValues
-
-    def self.current_schema=(schema)
-      @@current_schema = schema
-    end
-
-    def self.context=(context)
-      @@context = context
-    end
-
-    def self.context
-      @@context
-    end
 
     def writable_db
       getWritableDatabase
     end
 
     def self.drop_db
-      @@context.deleteDatabase(DATABASE_NAME)
+      SwissDB.context.deleteDatabase(SwissDB::DB_NAME)
     end
 
     def onUpgrade(db, oldVersion, newVersion)

@@ -9,9 +9,7 @@ module SwissDB
       @context = context
       @resources = context.getResources
       get_version_from_raw
-      # SwissDB::DataStore.context = context
       @store = DataStore.new(context, DB_NAME, nil, version)
-      puts "datastore #{@store.inspect}"
     end
 
     def get_version_from_raw

@@ -14,7 +14,7 @@ end
 
 def building_app?(args)
   # Don't write the schema to sql unless we're building the app
-  intersection = (args & %w(device archive build release emulator newclear)) # newclear is technically a build
+  intersection = (args & %w(device archive build release emulator newclear))
   !intersection.empty? || args == ""
 end
 
@@ -37,5 +37,5 @@ if defined?(Motion) && defined?(Motion::Project::Config)
     add_app_files(app)
   end
 else
-  puts 'SwissDB must be included in a BluePotion App' if ARGV[0] != "gem:install"
+  puts 'ERROR: SwissDB must be included in a RubyMotion App' if ARGV[0] != "gem:install"
 end
