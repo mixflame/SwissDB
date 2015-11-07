@@ -23,6 +23,7 @@ module SwissDB
       if instance_variable_get("@#{str}")
         return instance_variable_get("@#{str}")
       elsif str[-1] == '=' # setter
+        instance_variable_set("@#{str.chop}", args[0])
         @values[str.chop] = args[0]
       end
     end
