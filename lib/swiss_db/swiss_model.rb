@@ -110,14 +110,14 @@ module SwissDB
 
       def first
         # select all and get first
-        cursor = all.first
-        cursor
+        model = all.first
+        model
       end
 
       def last
         # select all and get last
-        cursor = all.last
-        cursor
+        model = all.last
+        model
       end
 
       def create(obj)
