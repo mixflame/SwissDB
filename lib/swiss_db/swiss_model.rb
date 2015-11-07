@@ -18,6 +18,13 @@ module SwissDB
       @values = {}
     end
 
+    def self.method_missing(methId, *args)
+      str = methId.id2name
+      if str.include?("find_by")
+        where(str.split("find_by_")[1] => args[0]).first
+      end
+    end
+
     def method_missing(methId, *args)
       str = methId.id2name
       if instance_variable_get("@#{str}")

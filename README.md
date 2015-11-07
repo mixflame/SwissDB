@@ -4,6 +4,10 @@
 
 RubyMotion Android ActiveRecord-like ORM for SQLite. **Known to work on RM 4.4 and not work on RM 4.5** A bug report has been submitted so we'll update this when that gets fixed.
 
+## Example
+
+See: https://github.com/KCErb/swissdb_debug
+
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -88,9 +92,11 @@ end
   Model.first.name
   Model.all.last.name
   Model.all.count
+  Model.find_by_<column>("some value") # dynamic finders
+  Model.create(hash_values) # returns created model
   m = Model.first
-  m.name = "Sam"
-  m.save # will persist the data
+  m.name = "Sam" # changed values will persist in the model instance
+  m.save # will persist the data to the database
   m.update_attribute("name", "chucky")
 ```
 
