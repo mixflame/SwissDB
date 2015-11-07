@@ -24,21 +24,36 @@ module SwissDB
     end
 
     def first
-      return nil if count == 0
-      cursor.moveToFirst ? self : nil
-      model.new(to_hash, cursor)
+      begin
+        return nil if count == 0
+        cursor.moveToFirst ? self : nil
+        swiss_model = model.new(to_hash)
+      ensure
+        cursor.close
+      end
+      swiss_model
     end
 
     def last
-      return nil if count == 0
-      cursor.moveToLast ? self : nil
-      model.new(to_hash, cursor)
+      begin
+        return nil if count == 0
+        cursor.moveToLast ? self : nil
+        swiss_model = model.new(to_hash)
+      ensure
+        cursor.close
+      end
+      swiss_model
     end
 
     def [](pos)
-      return nil if count == 0
-      cursor.moveToPosition(pos) ? self : nil
-      model.new(to_hash, cursor)
+      begin
+        return nil if count == 0
+        cursor.moveToPosition(pos) ? self : nil
+        swiss_model = model.new(to_hash)
+      ensure
+        cursor.close
+      end
+      swiss_model
     end
 
     def to_hash
@@ -50,12 +65,16 @@ module SwissDB
     end
 
     def to_a
-      return nil if count == 0
-      arr = []
-      (0...count).each do |i|
-        # puts i
-        cursor.moveToPosition(i)
-        arr << model.new(to_hash, cursor)
+      begin
+        return nil if count == 0
+        arr = []
+        (0...count).each do |i|
+          # puts i
+          cursor.moveToPosition(i)
+          arr << model.new(to_hash)
+        end
+      ensure
+        cursor.close
       end
       arr
     end

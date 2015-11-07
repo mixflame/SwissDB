@@ -9,10 +9,9 @@ module SwissDB
     #    puts "New subclass: #{subclass.class.name.split('.').last}"
     # end
 
-    attr_accessor :cursor, :values
+    attr_accessor :values
 
-    def initialize(h, cursor)
-      @cursor = cursor
+    def initialize(h)
       h.each do |k,v|
         instance_variable_set("@#{k}", v)
       end
