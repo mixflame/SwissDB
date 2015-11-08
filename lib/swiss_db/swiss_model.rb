@@ -134,7 +134,7 @@ module SwissDB
         if result == -1
           puts "An error occured inserting values into #{@table_name}"
         else
-          return self.where(id: result.intValue).first
+          return self.where(primary_key => result.intValue).first
         end
       end
 
