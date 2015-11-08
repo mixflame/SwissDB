@@ -11,10 +11,11 @@ module SwissDB
 
     attr_accessor :values
 
-    def initialize(h)
+    def initialize(h={})
       h.each do |k,v|
         instance_variable_set("@#{k}", v)
       end
+      @new_record = (h == {}) # any loaded record should have atleast SOME data
       @values = {}
     end
 
@@ -35,10 +36,19 @@ module SwissDB
       end
     end
 
+    def new_record?
+      @new_record
+    end
+
     def save
-      store.update(table_name,
-                   @values,
-                   {primary_key => primary_key_value})
+      unless new_record?
+        store.update(table_name,
+                     @values,
+                     {primary_key => primary_key_value})
+      else
+        store.insert(table_name,
+                     @values)
+      end
     end
 
     def update_attribute(key, value)

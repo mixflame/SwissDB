@@ -98,6 +98,9 @@ end
   m.name = "Sam" # changed values will persist in the model instance
   m.save # will persist the data to the database
   m.update_attribute("name", "chucky")
+  m = Model.new
+  m.thing = "stuff"
+  m.save # upsert, (insert if doesn't exist, and update if does)
 ```
 
 
