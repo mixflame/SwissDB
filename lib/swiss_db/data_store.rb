@@ -11,7 +11,7 @@ module SwissDB
     end
 
     def self.drop_db
-      SwissDB.context.deleteDatabase(SwissDB::DB_NAME)
+      SwissDB.context.deleteDatabase(SwissDB.db_name)
     end
 
     def onUpgrade(db, oldVersion, newVersion)

@@ -3,13 +3,15 @@ module SwissDB
 
     attr_accessor :store, :context, :resources, :version
 
-    DB_NAME = 'swissdb'
+    def db_name
+      'swissdb'
+    end
 
     def setup(context)
       @context = context
       @resources = context.getResources
       get_version_from_raw
-      @store = DataStore.new(context, DB_NAME, nil, version)
+      @store = DataStore.new(context, db_name, nil, version)
     end
 
     def get_version_from_raw
