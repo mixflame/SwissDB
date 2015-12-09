@@ -109,6 +109,12 @@ module SwissDB
 
       if type == FIELD_TYPE_STRING #also boolean
         str = cursor.getString(index).to_s
+
+        if str =~ /[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}/
+          formatter = Java::Text::SimpleDateFormat.new('yyyy-MM-dd hh:mm:ss.SSS')
+          str = formatter.parse(str)
+        end
+
         str = true if str == "true"
         str = false if str == "false"
         str

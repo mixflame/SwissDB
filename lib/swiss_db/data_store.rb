@@ -31,7 +31,7 @@ module SwissDB
       # puts "inserting data in #{table}"
       values = ContentValues.new(hash_values.count)
       hash_values.each do |k, v|
-        values.put(k, v)
+        values.put(k, coerces(v))
       end
       result = db.insert(table, nil, values)
       result
@@ -47,7 +47,7 @@ module SwissDB
     def select(db=writable_db, table, values, model)
       puts "selecting data from #{table}"
       value_str = values.map do |k, v|
-        "#{k} = '#{v}'"
+        "#{k} = '#{coerces(v)}'"
       end.join(" AND ")
       sql = "select * from '#{table}' where #{value_str}"
       puts sql
@@ -59,10 +59,10 @@ module SwissDB
 
     def update(db=writable_db, table, values, where_values)
       value_str = values.map do |k, v|
-        "'#{k}' = '#{v}'"
+        "'#{k}' = '#{coerces(v)}'"
       end.join(",")
       where_str = where_values.map do |k, v|
-        "#{k} = '#{v}'"
+        "#{k} = '#{coerces(v)}'"
       end.join(",")
       sql = "update '#{table}' set #{value_str} where #{where_str}"
       puts sql
@@ -74,6 +74,16 @@ module SwissDB
     def destroy_all(db=writable_db, table) # WARNING!
       puts "destroying all from #{table}"
       db.delete(table, nil, nil)
+    end
+
+    # transform values
+    def coerces(v)
+      if v.is_a?(Time)
+        formatter = Java::Text::SimpleDateFormat.new('yyyy-MM-dd hh:mm:ss.SSS')
+        formatter.format(v).to_s
+      else
+        v.to_s
+      end
     end
   end
 end
