@@ -45,6 +45,10 @@ module SwissDB
       swiss_model
     end
 
+    def current
+      model.new(to_hash)
+    end
+
     def [](pos)
       begin
         return nil if count == 0
@@ -105,6 +109,12 @@ module SwissDB
 
       if type == FIELD_TYPE_STRING #also boolean
         str = cursor.getString(index).to_s
+
+        if str =~ /[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}/
+          formatter = Java::Text::SimpleDateFormat.new('yyyy-MM-dd hh:mm:ss.SSS')
+          str = formatter.parse(str)
+        end
+
         str = true if str == "true"
         str = false if str == "false"
         str
@@ -125,6 +135,45 @@ module SwissDB
 
     def column_names
       cursor.getColumnNames.map(&:to_sym)
+    end
+
+    def map(&block)
+      return [] if count == 0
+      arr = []
+      (0...count).each do |i|
+        # puts i
+        cursor.moveToPosition(i)
+        arr << yield(model.new(to_hash))
+      end
+
+      arr
+    end
+
+    def each(&block)
+      return [] if count == 0
+      arr = []
+      (0...count).each do |i|
+        # puts i
+        cursor.moveToPosition(i)
+        m = model.new(to_hash)
+        yield(m)
+        arr << m
+      end
+
+      arr
+    end
+
+    # those methods allow the use of PMCursorAdapter with SwissDB
+    def moveToPosition(i)
+      cursor.moveToPosition(i)
+    end
+
+    def moveToLast
+      cursor.moveToLast
+    end
+
+    def moveToFirst
+      cursor.moveToFirst
     end
   end
 end
