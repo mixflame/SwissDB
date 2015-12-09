@@ -45,6 +45,10 @@ module SwissDB
       swiss_model
     end
 
+    def current
+      model.new(to_hash)
+    end
+
     def [](pos)
       begin
         return nil if count == 0
