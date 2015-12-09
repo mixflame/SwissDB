@@ -49,6 +49,8 @@ module SwissDB
         store.insert(table_name,
                      @values)
       end
+
+      @values = {}
     end
 
     def update_attribute(key, value)
