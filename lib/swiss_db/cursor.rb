@@ -130,6 +130,33 @@ module SwissDB
     def column_names
       cursor.getColumnNames.map(&:to_sym)
     end
+
+    def map(&block)
+      return [] if count == 0
+      arr = []
+      (0...count).each do |i|
+        # puts i
+        cursor.moveToPosition(i)
+        arr << yield(model.new(to_hash))
+      end
+
+      arr
+    end
+
+    def each(&block)
+      return [] if count == 0
+      arr = []
+      (0...count).each do |i|
+        # puts i
+        cursor.moveToPosition(i)
+        m = model.new(to_hash)
+        yield(m)
+        arr << m
+      end
+
+      arr
+    end
+
     # those methods allow the use of PMCursorAdapter with SwissDB
     def moveToPosition(i)
       cursor.moveToPosition(i)
