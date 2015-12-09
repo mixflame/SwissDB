@@ -126,5 +126,17 @@ module SwissDB
     def column_names
       cursor.getColumnNames.map(&:to_sym)
     end
+    # those methods allow the use of PMCursorAdapter with SwissDB
+    def moveToPosition(i)
+      cursor.moveToPosition(i)
+    end
+
+    def moveToLast
+      cursor.moveToLast
+    end
+
+    def moveToFirst
+      cursor.moveToFirst
+    end
   end
 end
