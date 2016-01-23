@@ -24,9 +24,9 @@ def add_app_files(app)
 
   # Specify which folders to put into the app
   swiss_db_files = Dir.glob(File.join(lib_dir_path, "/swiss_db/**/**.rb"))
-  motion_files = Dir.glob(File.join(lib_dir_path, "/motion-support/**/*.rb"))
+  # motion_files = Dir.glob(File.join(lib_dir_path, "/motion-support/**/*.rb"))
 
-  (swiss_db_files + motion_files).each do |file|
+  swiss_db_files.each do |file|
     app.files.insert(insert_point, file)
   end
 end

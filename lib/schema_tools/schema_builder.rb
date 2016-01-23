@@ -1,9 +1,9 @@
 # load code for `tableize` here since this file is called outside of RubyMotion
-require 'motion-support/inflector/methods'
-require 'motion-support/inflector/inflections'
-require 'motion-support/array'
-require 'motion-support/string'
-require 'motion-support/default_inflections'
+# require 'motion-support/inflector/methods'
+# require 'motion-support/inflector/inflections'
+# require 'motion-support/array'
+# require 'motion-support/string'
+# require 'motion-support/default_inflections'
 
 module SchemaTools
   class SchemaBuilder
@@ -26,6 +26,7 @@ module SchemaTools
     end
 
     def check_opts(opts)
+      puts opts
       raise 'schema must supply a hash before the block' unless opts.is_a? Hash
       raise 'schema must specify a version' unless opts[:version]
     end
