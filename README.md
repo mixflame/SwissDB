@@ -1,5 +1,7 @@
 [![endorse](https://api.coderwall.com/jsilverMDX/endorsecount.png)](https://coderwall.com/jsilverMDX)
 
+Support SwissDB: https://gratipay.com/swissdb/
+
 # SwissDb
 
 RubyMotion Android ActiveRecord-like ORM for SQLite. **Known to work on RM 4.4 and not work on RM 4.5** A bug report has been submitted so we'll update this when that gets fixed.
