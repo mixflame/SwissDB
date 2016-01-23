@@ -2,7 +2,7 @@
 lib = File.expand_path('../lib/**', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
-VERSION = "0.9.1"
+VERSION = "0.9.2"
 
 Gem::Specification.new do |spec|
   spec.name          = "swiss_db"
