@@ -43,7 +43,7 @@ module SchemaTools
     end
 
     def init_table(class_name)
-      @current_table = class_name.tableize
+      @current_table = class_name #.tableize #broken
       @schema_hash[@current_table] = {}
     end
 

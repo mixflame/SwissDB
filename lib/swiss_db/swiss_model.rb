@@ -97,7 +97,7 @@ module SwissDB
 
       def set_class_name(class_name) # hack, class.name not functioning in RM Android...
         @class_name = class_name
-        set_table_name(class_name.tableize)
+        set_table_name(class_name) #.tableize #broken
       end
 
       def set_table_name(table_name)
