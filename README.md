@@ -1,10 +1,10 @@
-[![endorse](https://api.coderwall.com/jsilverMDX/endorsecount.png)](https://coderwall.com/jsilverMDX)
-
-Support SwissDB: https://gratipay.com/swissdb/
+If you'd like to support the continued development of SwissDB, please check out our Gratipay: https://gratipay.com/swissdb/
 
 # SwissDb
 
-RubyMotion Android ActiveRecord-like ORM for SQLite. **Known to work on RM 4.4 and not work on RM 4.5** A bug report has been submitted so we'll update this when that gets fixed.
+This is SwissDb, a RubyMotion Android ActiveRecord-like ORM for SQLite.
+
+SwissDb 1.0 is working and stable as of RubyMotion 4.11.
 
 ## Example
 
@@ -27,6 +27,20 @@ Or install it yourself as:
     $ gem install swiss_db
 
 ## Usage
+
+Usage is the same as ActiveRecord and CoreDataQuery.
+
+```ruby
+Car.create(is_red: true, mileage: (rand * 100_000).floor)
+car = Car.first
+car.is_red = true
+car.save
+mp Car.all.to_a
+car = Car.last
+car.update_attribute('is_red', false)
+
+```
+
 
 # Schemas
 
