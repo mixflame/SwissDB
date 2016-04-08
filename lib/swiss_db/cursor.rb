@@ -2,125 +2,178 @@
 # Helps move around a result set
 # Convenience methods over the standard cursor
 # Used by Swiss DataStore
+module SwissDB
+  class Cursor
 
-# class CursorModel # won't use model properties (custom methods)
+    FIELD_TYPE_BLOB    = 4
+    FIELD_TYPE_FLOAT   = 2
+    FIELD_TYPE_INTEGER = 1
+    FIELD_TYPE_NULL    = 0
+    FIELD_TYPE_STRING  = 3
 
-#   def initialize(h)
-#     h.each do |k,v|
-#       instance_variable_set("@#{k}", v)
-#     end
-#   end
+    attr_accessor :cursor, :model
 
-#   def method_missing(methId, *args)
-#     str = methId.id2name
-#     instance_variable_get("@#{str}")
-#   end
+    def initialize(cursor, model)
+      @cursor = cursor
+      @model = model
+      @values = {}
+    end
 
-# end
+    def model
+      @model
+    end
 
-class Cursor
+    def first
+      begin
+        return nil if count == 0
+        cursor.moveToFirst ? self : nil
+        swiss_model = model.new(to_hash)
+      ensure
+        cursor.close
+      end
+      swiss_model
+    end
 
-  FIELD_TYPE_BLOB    = 4
-  FIELD_TYPE_FLOAT   = 2
-  FIELD_TYPE_INTEGER = 1
-  FIELD_TYPE_NULL    = 0
-  FIELD_TYPE_STRING  = 3
+    def last
+      begin
+        return nil if count == 0
+        cursor.moveToLast ? self : nil
+        swiss_model = model.new(to_hash)
+      ensure
+        cursor.close
+      end
+      swiss_model
+    end
 
-  attr_accessor :cursor, :model
+    def current
+      model.new(to_hash)
+    end
 
-  def initialize(cursor, model)
-    @cursor = cursor
-    @model = model
-    @values = {}
-  end
+    def [](pos)
+      begin
+        return nil if count == 0
+        cursor.moveToPosition(pos) ? self : nil
+        swiss_model = model.new(to_hash)
+      ensure
+        cursor.close
+      end
+      swiss_model
+    end
 
-  def model
-    @model
-  end
-
-  def first
-    return nil if count == 0
-    cursor.moveToFirst ? self : nil
-    model.new(to_hash, cursor)
-  end
-
-  def last
-    return nil if count == 0
-    cursor.moveToLast ? self : nil
-    model.new(to_hash, cursor)
-  end
-
-  def [](pos)
-    return nil if count == 0
-    cursor.moveToPosition(pos) ? self : nil
-    model.new(to_hash, cursor)
-  end
-
-  def to_hash
+    def to_hash
       hash_obj = {}
-      $current_schema[model.table_name].each do |k, v|
-        hash_obj[k.to_sym] = self.send(k.to_sym)
+      column_names.each do |k|
+        hash_obj[k] = self.send(k)
       end
       hash_obj
-  end
+    end
 
-  def to_a
-    return nil if count == 0
-    arr = []
-    (0...count).each do |i|
-      # puts i
+    def to_a
+      begin
+        return nil if count == 0
+        arr = []
+        (0...count).each do |i|
+          # puts i
+          cursor.moveToPosition(i)
+          arr << model.new(to_hash)
+        end
+      ensure
+        cursor.close
+      end
+      arr
+    end
+
+    # todo: take out setter code. it's not used anymore. leave the getter code. it is used. (see #to_hash)
+
+    def method_missing(method_name, *args)
+      # puts "cursor method missing #{method_name}"
+      if valid_getter?(method_name)
+        get_method(method_name)
+      else
+        super
+      end
+    end
+
+    def valid_getter?(method_name)
+      column_names.include? method_name
+    end
+
+    def is_setter?(method_name)
+      method_name[-1] == '='
+    end
+
+    def get_method(method_name)
+      index = cursor.getColumnIndex(method_name)
+      type = cursor.getType(index)
+      # puts "getting field #{method_name} at index #{index} of type #{type}"
+
+      if type == FIELD_TYPE_STRING #also boolean
+        str = cursor.getString(index).to_s
+
+        if str =~ /[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}/
+          formatter = Java::Text::SimpleDateFormat.new('yyyy-MM-dd hh:mm:ss.SSS')
+          str = formatter.parse(str)
+        end
+
+        str = true if str == "true"
+        str = false if str == "false"
+        str
+      elsif type == FIELD_TYPE_INTEGER
+        cursor.getInt(index).to_i
+      elsif type == FIELD_TYPE_NULL
+        nil #??
+      elsif type == FIELD_TYPE_FLOAT
+        cursor.getFloat(index).to_f
+      elsif type == FIELD_TYPE_BLOB
+        cursor.getBlob(index)
+      end
+    end
+
+    def count
+      cursor.getCount
+    end
+
+    def column_names
+      cursor.getColumnNames.map(&:to_sym)
+    end
+
+    def map(&block)
+      return [] if count == 0
+      arr = []
+      (0...count).each do |i|
+        # puts i
+        cursor.moveToPosition(i)
+        arr << yield(model.new(to_hash))
+      end
+
+      arr
+    end
+
+    def each(&block)
+      return [] if count == 0
+      arr = []
+      (0...count).each do |i|
+        # puts i
+        cursor.moveToPosition(i)
+        m = model.new(to_hash)
+        yield(m)
+        arr << m
+      end
+
+      arr
+    end
+
+    # those methods allow the use of PMCursorAdapter with SwissDB
+    def moveToPosition(i)
       cursor.moveToPosition(i)
-      arr << model.new(to_hash, cursor)
     end
-    arr
-  end
 
-  # todo: take out setter code. it's not used anymore. leave the getter code. it is used. (see #to_hash)
-
-  def method_missing(methId, *args)
-    method_name = methId.id2name
-    # puts "cursor method missing #{method_name}"
-    if valid_getter?(method_name)
-      get_method(method_name)
-    else
-      super
+    def moveToLast
+      cursor.moveToLast
     end
-  end
 
-  def valid_getter?(method_name)
-    column_names.include? method_name
-  end
-
-  def is_setter?(method_name)
-    method_name[-1] == '='
-  end
-
-  def get_method(method_name)
-    index = cursor.getColumnIndex(method_name)
-    type = cursor.getType(index)
-    # puts "getting field #{method_name} at index #{index} of type #{type}"
-
-    if type == FIELD_TYPE_STRING #also boolean
-      str = cursor.getString(index).to_s
-      str = true if str == "true"
-      str = false if str == "false"
-      str
-    elsif type == FIELD_TYPE_INTEGER
-      cursor.getInt(index).to_i
-    elsif type == FIELD_TYPE_NULL
-      nil #??
-    elsif type == FIELD_TYPE_FLOAT
-      cursor.getFloat(index).to_f
-    elsif type == FIELD_TYPE_BLOB
-      cursor.getBlob(index)
+    def moveToFirst
+      cursor.moveToFirst
     end
-  end
-
-  def count
-    cursor.getCount
-  end
-
-  def column_names
-    cursor.getColumnNames
   end
 end

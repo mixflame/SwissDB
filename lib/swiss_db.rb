@@ -1,27 +1,41 @@
 # -*- coding: utf-8 -*-
 # SwissDB by jsilverMDX
 
-if defined?(Motion) && defined?(Motion::Project::Config)
-  lib_dir_path = File.dirname(File.expand_path(__FILE__))
-  Motion::Project::App.setup do |app|
-    # unless platform_name == "android"
-    #   raise "Sorry, the platform #{platform_name} is not supported by SwissDB"
-    # end
+def setup_schema(app)
+  require 'schema_tools/schema_builder'
+  require 'schema_tools/writer'
+  schema, version = SchemaTools::SchemaBuilder.build_schema(app)
+  SchemaTools::Writer.create_schema_sql(schema, app)
+  SchemaTools::Writer.write_version_file(version, app)
+  # TODO
+  # migrations = SwissDB::MigrationsBuilder.build_migrations
+  # SwissDB::SQLWriter.create_migration_sql(migrations)
+end
 
-    # scans app.files until it finds app/ (the default)
-    # if found, it inserts just before those files, otherwise it will insert to
-    # the end of the list
-    insert_point = app.files.find_index { |file| file =~ /^(?:\.\/)?app\// } || 0
+def building_app?(args)
+  # Don't write the schema to sql unless we're building the app
+  intersection = (args & %w(device archive build release emulator newclear))
+  !intersection.empty? || args == ""
+end
 
-    # change to "swiss_db" for just swiss_db
-    Dir.glob(File.join(lib_dir_path, "**/*.rb")).each do |file|
-      app.files.insert(insert_point, file)
-    end
+def add_app_files(app)
+  lib_dir_path = File.dirname(__FILE__)
+  insert_point = app.files.find_index { |file| file =~ /^(?:\.\/)?app\// } || 0
 
-    # load their schemas folder
-    app.files += Dir.glob("schemas/*.rb")
+  # Specify which folders to put into the app
+  swiss_db_files = Dir.glob(File.join(lib_dir_path, "/swiss_db/**/**.rb"))
+  motion_files = Dir.glob(File.join(lib_dir_path, "/motion-support/**/*.rb"))
 
-    # puts "APP FILES: #{app.files.inspect}"
-
+  (swiss_db_files + motion_files).each do |file|
+    app.files.insert(insert_point, file)
   end
+end
+
+if defined?(Motion) && defined?(Motion::Project::Config)
+  Motion::Project::App.setup do |app|
+    setup_schema(app) if building_app?(ARGV)
+    add_app_files(app)
+  end
+else
+  puts 'ERROR: SwissDB must be included in a RubyMotion App' if ARGV[0] != "gem:install"
 end

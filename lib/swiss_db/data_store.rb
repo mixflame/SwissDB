@@ -1,50 +1,29 @@
-  # main connection point
-  # creates and upgrades our database for us
-  # and provides low level SQL features
-
+# main connection point
+# creates and upgrades our database for us
+# and provides low level SQL features
+module SwissDB
   class DataStore < Android::Database::SQLite::SQLiteOpenHelper
 
-    DATABASE_NAME = "swissdb"
-    DATABASE_VERSION = 1
     ContentValues = Android::Content::ContentValues
-
-    def self.current_schema=(schema)
-      @@current_schema = schema
-    end
-
-    def self.context=(context)
-      @@context = context
-    end
-
-    def self.context
-      @@context
-    end
 
     def writable_db
       getWritableDatabase
     end
 
     def self.drop_db
-      @@context.deleteDatabase(DATABASE_NAME)
+      SwissDB.context.deleteDatabase(SwissDB.db_name)
     end
 
     def onUpgrade(db, oldVersion, newVersion)
-      # maybe drop if needed...
-      db.execSQL("DROP *")
-      onCreate(db)
+      # TODO when migrations are implemented
+      mp "Calling onUpgrade"
+      mp "old version: #{oldVersion}"
+      mp "new version: #{newVersion}"
     end
 
     #create
     def onCreate(db)
-      # puts "table creation... running schema"
-      # THIS RELIES ON SCHEMA CODE TO SUCCEED
-      # NOTE: I don't know a better way of passing the schema here
-      # If you do just change it. For now this works.
-      # Thanks.
-      @@current_schema.each do |k, v|
-        create_table db, k, v
-      end
-      # database.execSQL("CREATE TABLE credentials(username TEXT, password TEXT)")
+      SwissDB.create_tables_from_schema(db)
     end
 
     #insert
@@ -52,7 +31,7 @@
       # puts "inserting data in #{table}"
       values = ContentValues.new(hash_values.count)
       hash_values.each do |k, v|
-        values.put(k, v)
+        values.put(k, coerces(v))
       end
       result = db.insert(table, nil, values)
       result
@@ -68,7 +47,7 @@
     def select(db=writable_db, table, values, model)
       puts "selecting data from #{table}"
       value_str = values.map do |k, v|
-        "#{k} = '#{v}'"
+        "#{k} = '#{coerces(v)}'"
       end.join(" AND ")
       sql = "select * from '#{table}' where #{value_str}"
       puts sql
@@ -80,10 +59,10 @@
 
     def update(db=writable_db, table, values, where_values)
       value_str = values.map do |k, v|
-        "'#{k}' = '#{v}'"
+        "'#{k}' = '#{coerces(v)}'"
       end.join(",")
       where_str = where_values.map do |k, v|
-        "#{k} = '#{v}'"
+        "#{k} = '#{coerces(v)}'"
       end.join(",")
       sql = "update '#{table}' set #{value_str} where #{where_str}"
       puts sql
@@ -97,13 +76,14 @@
       db.delete(table, nil, nil)
     end
 
-    # create table
-    def create_table(db=writable_db, table_name, fields)
-      fields_string = fields.map { |k, v| "#{k} #{v}" }.join(',')
-      sql = "CREATE TABLE #{table_name}(#{fields_string})"
-      puts sql
-      db.execSQL sql
+    # transform values
+    def coerces(v)
+      if v.is_a?(Time)
+        formatter = Java::Text::SimpleDateFormat.new('yyyy-MM-dd hh:mm:ss.SSS')
+        formatter.format(v).to_s
+      else
+        v.to_s
+      end
     end
-
-
   end
+end
