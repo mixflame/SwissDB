@@ -28,11 +28,15 @@ module SwissDB
 
     def method_missing(methId, *args)
       str = methId.id2name
-      if instance_variable_get("@#{str}")
-        return instance_variable_get("@#{str}")
-      elsif str[-1] == '=' # setter
+
+      if str[-1] == '=' # setter
         instance_variable_set("@#{str.chop}", args[0])
         @values[str.chop] = args[0]
+        return args[0]
+      end
+
+      if instance_variable_get("@#{str}")
+        return instance_variable_get("@#{str}")
       end
     end
 
