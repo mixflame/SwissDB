@@ -1,5 +1,3 @@
-If you'd like to support the continued development of SwissDB, please check out our Gratipay: https://gratipay.com/swissdb/
-
 # SwissDb
 
 This is SwissDb, a RubyMotion Android ActiveRecord-like ORM for SQLite.
